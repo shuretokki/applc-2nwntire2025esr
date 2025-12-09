@@ -15,16 +15,15 @@ else:
 !pip install -q -r {repo_name}/requirements.txt
 
 ds = "/kaggle/input/visdrone-dataset/VisDrone_Dataset/VisDrone2019-DET-train/images"
-%cd applc-2nwntire2025esr
+%cd {repo_name}
 
 if os.path.exists(ds):
-    !python dataprep.py --source "$ds" --limit 5
-    # !python dataprep.py --source "$ds" --limit 2000
-else:
-    print(f"WARNING: Source dataset {ds} not found.")
+    if not os.path.exists("data/train_hr"):
+        print("Prepping dataset...")
+        !python dataprep.py --source "$ds" --limit 1000
 
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
-!python train-k.py --epochs 1 --batch_size 16 --patch_size 64
-# !python train-k.py --batch_size 16 --patch_size 64
+!python train-k.py --epochs 1 --batch_size 32 --patch_size 96
+# !python train-k.py --batch_size 32 --patch_size 96
 
 %cd ..

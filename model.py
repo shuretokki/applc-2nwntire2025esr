@@ -811,9 +811,9 @@ class HATIQCMix(nn.Module):
         self.img_range = img_range
         if in_chans == 3:
             rgb_mean = (0.4488, 0.4371, 0.4040)
-            self.mean = torch.Tensor(rgb_mean).view(1, 3, 1, 1)
+            self.register_buffer('img_mean', torch.Tensor(rgb_mean).view(1, 3, 1, 1), persistent=False)
         else:
-            self.mean = torch.zeros(1, 1, 1, 1)
+            self.register_buffer('img_mean', torch.zeros(1, 1, 1, 1), persistent=False)
         self.upscale = upscale
         self.upsampler = upsampler
 
@@ -1071,8 +1071,8 @@ class HATIQCMix(nn.Module):
 
     def forward(self, x):
         # 1. Pre-processing
-        self.mean = self.mean.type_as(x)
-        x = (x - self.mean) * self.img_range
+        # self.img_mean is handled by register_buffer
+        x = (x - self.img_mean) * self.img_range
         x_first = self.conv_first(x)
 
         x_size = (x_first.shape[2], x_first.shape[3])
@@ -1103,7 +1103,7 @@ class HATIQCMix(nn.Module):
         else:
              pass
 
-        x = x / self.img_range + self.mean
+        x = x / self.img_range + self.img_mean
         return x
 
 
