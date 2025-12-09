@@ -68,10 +68,12 @@ def train(args):
     model = model.to(DEVICE)
     print("[DEBUG] Model on device.")
 
-    if torch.cuda.device_count() > 1:
-        print(f"[INFO] Detected {torch.cuda.device_count()} GPUs. Enabling Multi-GPU")
-        model = nn.DataParallel(model)
-        print("[DEBUG] DataParallel enabled.")
+    # Disable DataParallel - HAT has issues with multi-GPU due to window attention
+    # if torch.cuda.device_count() > 1:
+    #     print(f"[INFO] Detected {torch.cuda.device_count()} GPUs. Enabling Multi-GPU")
+    #     model = nn.DataParallel(model)
+    #     print("[DEBUG] DataParallel enabled.")
+    print(f"[INFO] Using single GPU (DataParallel disabled for stability)")
 
     criterion = nn.L1Loss()
     optimizer = optim.AdamW(model.parameters(), lr=LR_RATE, betas=(0.9, 0.999), weight_decay=1e-4)
