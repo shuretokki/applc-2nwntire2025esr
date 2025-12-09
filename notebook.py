@@ -7,21 +7,13 @@ if not os.path.exists("applc-2nwntire2025esr"):
 !pip install -r applc-2nwntire2025esr/requirements.txt
 
 ds = "/kaggle/input/visdrone-dataset/VisDrone2019-DET-train/images"
-repo_data = "applc-2nwntire2025esr/data"
-
-if not os.path.exists(repo_data):
-    os.makedirs(repo_data)
-
-TARGET_HR = "applc-2nwntire2025esr/data/train_hr"
-
-if not os.path.exists(TARGET_HR):
-    if os.path.exists(ds):
-        print(f"Linking {ds} to {TARGET_HR}")
-        os.symlink(ds, TARGET_HR)
-    else:
-        print(f"WARNING: Dataset path {ds} not found.")
-
 %cd applc-2nwntire2025esr
+
+if os.path.exists(ds):
+    print(f"Generating dataset from {ds}...")
+    !python dataprep.py --source "$ds" --limit 2000
+else:
+    print(f"WARNING: Source dataset {ds} not found.")
 
 !python train-k.py --epochs 1
 # !python train-k.py
