@@ -5,6 +5,7 @@ repo_url = "https://github.com/shuretokki/applc-2nwntire2025esr.git"
 
 if os.path.exists(repo_name):
     %cd {repo_name}
+    !git reset --hard
     !git pull
     %cd ..
 else:
