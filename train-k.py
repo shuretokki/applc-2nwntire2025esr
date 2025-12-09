@@ -45,7 +45,7 @@ def train(args):
 
     train_dataset = kDataset(hr_dir=HR_DIR, lr_dir=LR_DIR, debug_mode=False, patch_size=PATCH_SIZE, upscale_factor=args.upscale)
     print(f"[INFO] Train Dataset len: {len(train_dataset)}")
-    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=0, pin_memory=True, persistent_workers=True)
+    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4, pin_memory=True, persistent_workers=True)
 
     model = HATIQCMix(
             img_size=PATCH_SIZE,
