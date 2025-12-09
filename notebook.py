@@ -23,7 +23,8 @@ if os.path.exists(ds):
 else:
     print(f"WARNING: Source dataset {ds} not found.")
 
-!python train-k.py --epochs 1
-# !python train-k.py
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+!python train-k.py --epochs 1 --batch_size 16 --patch_size 64
+# !python train-k.py --batch_size 16 --patch_size 64
 
 %cd ..

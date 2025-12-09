@@ -59,7 +59,8 @@ def train(args):
             overlap_ratio=0.5,
             mlp_ratio=2.,
             qkv_bias=True,
-            upscale=args.upscale
+            upscale=args.upscale,
+            upsampler='pixelshuffle'
         )
     model = model.to(DEVICE)
 

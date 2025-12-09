@@ -1100,6 +1100,8 @@ class HATIQCMix(nn.Module):
             x = self.conv_before_upsample(x)
             x = self.upsample(x)
             x = self.conv_last(x)
+        else:
+             pass
 
         x = x / self.img_range + self.mean
         return x
