@@ -14,6 +14,8 @@ except ImportError:
     AMP_AVAILABLE = False
     print("[WARN] torch.cuda.amp not found. Slower FP32 training will be used.")
 
+import torch._dynamo
+torch._dynamo.config.suppress_errors = True
 
 def train(args):
     DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
