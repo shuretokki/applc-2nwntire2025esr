@@ -22,8 +22,12 @@ def prepare_dataset(hr_sourcedir='data/train', limit=300):
     extensions = ['png', 'jpg', 'jpeg', 'BMP', 'tif', 'tiff']
     files = []
     for ext in extensions:
-        files.extend(glob.glob(os.path.join(hr_sourcedir, '**', f'*.{ext}'), recursive=True))
+        pattern = os.path.join(hr_sourcedir, '**', f'*.{ext}')
+        found = glob.glob(pattern, recursive=True)
+        files.extend(found)
         files.extend(glob.glob(os.path.join(hr_sourcedir, '**', f'*.{ext.upper()}'), recursive=True))
+
+    print(f"DEBUG: Found {len(files)} potential image files.")
 
     files = sorted(list(set(files)))
 

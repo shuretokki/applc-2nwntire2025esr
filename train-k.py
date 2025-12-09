@@ -1,9 +1,6 @@
 import os
 import time
 import gc
-import os
-import time
-import gc
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -67,11 +64,14 @@ def train(args):
             upscale=args.upscale,
             upsampler='pixelshuffle'
         )
+    print("[DEBUG] Model created, moving to device...")
     model = model.to(DEVICE)
+    print("[DEBUG] Model on device.")
 
     if torch.cuda.device_count() > 1:
         print(f"[INFO] Detected {torch.cuda.device_count()} GPUs. Enabling Multi-GPU")
         model = nn.DataParallel(model)
+        print("[DEBUG] DataParallel enabled.")
 
     criterion = nn.L1Loss()
     optimizer = optim.AdamW(model.parameters(), lr=LR_RATE, betas=(0.9, 0.999), weight_decay=1e-4)
@@ -96,20 +96,30 @@ def train(args):
     else:
         gpu_name = "CPU"
 
+    print("[DEBUG] Setting model to train mode...")
     model.train()
+    print("[DEBUG] Starting training loop...")
     for epoch in range(start_epoch, EPOCHS):
         epoch_start_time = time.time()
         epoch_loss = 0.0
 
         for batch_idx, data in enumerate(train_loader):
+            if batch_idx == 0:
+                print(f"[DEBUG] Epoch {epoch+1}: Loading first batch...")
             lr_imgs = data['LR'].to(DEVICE, non_blocking=True)
             hr_imgs = data['HR'].to(DEVICE, non_blocking=True)
+            if batch_idx == 0:
+                print(f"[DEBUG] Batch shapes - LR: {lr_imgs.shape}, HR: {hr_imgs.shape}")
 
             optimizer.zero_grad(set_to_none=True) # efficient zero_grad
 
             if AMP_AVAILABLE and DEVICE.type == 'cuda':
                 with autocast():
+                    if batch_idx == 0:
+                        print(f"[DEBUG] Running first forward pass...")
                     outputs = model(lr_imgs)
+                    if batch_idx == 0:
+                        print(f"[DEBUG] Forward pass complete. Output shape: {outputs.shape}")
                     loss = criterion(outputs, hr_imgs)
 
                 scaler.scale(loss).backward()
