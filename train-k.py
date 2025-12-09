@@ -1,5 +1,6 @@
 import os
 import time
+import gc
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -87,10 +88,6 @@ def train(args):
     else:
         print("[INFO] No checkpoint found. Starting from scratch.")
 
-    if hasattr(torch, 'compile'):
-        print("[INFO] PyTorch 2.0+ detected. Compiling model for faster execution...")
-        model = torch.compile(model)
-
     if torch.cuda.is_available():
         gpu_name = torch.cuda.get_device_name(0)
     else:
@@ -139,6 +136,10 @@ def train(args):
             }, CHECKPOINT_PATH)
 
             torch.save(model._orig_mod.state_dict() if hasattr(model, '_orig_mod') else model.state_dict(), "ltsmodel.pth")
+
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        gc.collect()
 
     print("[INFO] Training finished.")
 
