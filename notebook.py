@@ -20,7 +20,9 @@ ds = "/kaggle/input/visdrone-dataset/VisDrone_Dataset/VisDrone2019-DET-train/ima
 if os.path.exists(ds):
     if not os.path.exists("data/train_hr"):
         print("Prepping dataset...")
-        !python dataprep.py --source "$ds" --limit 1000
+        print("Prepping dataset...")
+        # Increase limit or remove it. 5000 is safer for "test" runs to get ~5-10k patches.
+        !python dataprep.py --source "$ds" --limit 5000
 
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 !python train-k.py --epochs 1 --batch_size 32 --patch_size 96

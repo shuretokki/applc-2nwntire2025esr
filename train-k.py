@@ -1,8 +1,9 @@
 import os
 import time
 import gc
-# Debugging: Force synchronous CUDA execution to catch illegal memory access source
-os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
+import os
+import time
+import gc
 import torch
 import torch.nn as nn
 import torch.optim as optim
